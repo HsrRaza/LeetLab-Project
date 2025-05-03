@@ -1,3 +1,7 @@
+import { db } from "../libs/db.js";
+import { submitBatch, pollBatchResults } from "../libs/judge0.lib.js";
+
+
 export const executeCode = async (req , res)=>{
 
     try {
@@ -37,7 +41,52 @@ export const executeCode = async (req , res)=>{
         const results = await pollBatchResults(tokens);
 
 
-        console.log();
+        console.log("Results-----------");
+        console.log(results);
+
+
+
+
+
+
+
+        // store submission summary
+
+        const submission = await db.submission.create({
+            data:{
+                userId,
+                problemId,
+                sourceCode:source_code,
+                langauage:getJudge0LanguageId(langauage_id),
+                stdin:stdin.json("\n"),
+                stdout:JSON.stringify(detailedResults.map( (r)=> r.stdout)),
+
+
+
+            }
+        });
+
+        // If All passed = true mark 
+        if(allPassed){
+            await db.problemSolved.upsert({
+                where:{
+                    userId_problemId:{
+                        userId, problemId
+                    }
+                },
+                update:{},
+                create:{
+                    userId, problemId
+                }
+            })
+        }
+
+        // 8. save individual test case 
+  
+        res.status(200).json({
+            message:"Code Executed!",
+        });
+
         
         
     } catch (error) {
