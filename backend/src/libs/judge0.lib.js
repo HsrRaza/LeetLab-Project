@@ -47,3 +47,14 @@ export const submitBatch = async (submission)=>{
     
 
 }
+
+export function getLanguageName(langauageId){
+    const LANGUAGE_NAME = {
+        74:"TypeScript",
+        63:"JavaScript",
+        71:"Python",
+        62:"Java"
+    }
+
+    return LANGUAGE_NAME[langauageId] || "Unknown"
+}

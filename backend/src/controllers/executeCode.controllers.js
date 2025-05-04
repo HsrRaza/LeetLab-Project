@@ -43,12 +43,39 @@ export const executeCode = async (req , res)=>{
 
         console.log("Results-----------");
         console.log(results);
+      
 
+        // 5. Analyze test Cases 
+        let allPassed = true;
+        const detailedResults = results.map( (result , i )=>{
+            const stdout = result.stdout?.trim();
+            const expected_output = expected_outputs[i]?.trim();
+            const passed = stdout === expected_output;
 
+            if(!passed) allPassed = false;
 
+            return {
+                 testCase:i+1,
+                 passed,
+                 stdout,
+                 expected:expected_output,
+                 stderr:result.stderr || null,
+                 compile_output: result.compile_output || null,
+                 status:result.status.description,
+                 memory:result.memory ? `${result.memory} KB` :undefined,
+                 time:result.time ? `${result.time} s`: undefined,
 
+            }
 
+            // console.log(`Testcase #${i+1}`);
+            // console.log(`Input for testcase #${i+1}:  ${stdin[i]}`);
+            // console.log(`Expected Output for testcase ${expected_output}`);
+            // console.log(`Actual output ${stdout}`);
 
+            // console.log(`Matched : ${passed}`);
+            
+        });
+    
 
         // store submission summary
 
@@ -57,7 +84,7 @@ export const executeCode = async (req , res)=>{
                 userId,
                 problemId,
                 sourceCode:source_code,
-                langauage:getJudge0LanguageId(langauage_id),
+                langauage:getLanguageName(langauage_id),
                 stdin:stdin.json("\n"),
                 stdout:JSON.stringify(detailedResults.map( (r)=> r.stdout)),
 
