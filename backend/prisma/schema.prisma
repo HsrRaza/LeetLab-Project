@@ -37,7 +37,7 @@ model User {
 
   problems   Problem[]
   Submission Submission[]
-  solvedBy   ProblemSolved[]
+  problemSolved   ProblemSolved[]
   Playlist   Playlist[]
 }
 
@@ -150,5 +150,5 @@ model ProblemInPlaylist {
   playlist Playlist @relation(fields: [playListId], references: [id], onDelete: Cascade)
   problem  Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
 
-  @@unique([playlist, problemId ])
+  @@unique([playListId, problemId ])
 }

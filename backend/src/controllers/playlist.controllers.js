@@ -22,6 +22,7 @@ export const createPlaylist = async (req, res) => {
 
     } catch (error) {
         console.error("Error creating playlist", error);
+        res.status(500).json({ error: "Failed to create playlist" });
 
     }
 
@@ -48,8 +49,8 @@ export const getAllListDetails = async (req, res) => {
     } catch (error) {
         console.error("Error while fetching playlist", error);
         res.status(500).json({
-            success: true,
-            message: "Error to fetch playlist"
+            success: false,
+            error: "Error to fetch playlist"
         })
 
 
@@ -75,6 +76,12 @@ export const getPlayListDetails = async (req, res) => {
             }
         })
 
+        if (!playlist) {
+            return res.status(404).json({
+                error: "Playlist not found"
+            })
+        }
+
         res.status(200).json({
             success: true,
             message: "Playlist Fetched successfully"
@@ -82,7 +89,8 @@ export const getPlayListDetails = async (req, res) => {
 
 
     } catch (error) {
-
+        console.error("Error fetching playlist:", error);
+        res.status(500).json({ error: "Failed to fetch playlist" });
     }
 
 
@@ -137,10 +145,12 @@ export const deletePlaylist = async (req, res) => {
         res.status(201).json({
             success: true,
             message: " deletd  playlist successfully",
+            deletePlaylist
 
         })
     } catch (error) {
-
+        console.error("Error deleting playlist:", error.message);
+        res.status(500).json({ error: "Failed to delete playlist" });
     }
 
 
