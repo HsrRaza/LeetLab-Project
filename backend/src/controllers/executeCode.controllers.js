@@ -112,16 +112,48 @@ export const executeCode = async (req, res) => {
             })
         }
 
-        // 8. save individual test case 
+        // 8. save individual test case  results using detailedresult
+        const testCasesResults = detailedResults.map((result) => ({
+            submissionId: submission.id,
+            testCase: result.testCase,
+            passed: result.passed,
+            stdout: result.stdout,
+            expected: result.expected,
+            stderr: result.stderr,
+            compileOutput: result.compile_output,
+            status: result.status,
+            memory: result.memory,
+            time: result.time,
+        }))
+
+        await db.testCasesResult.createMany({
+            data: testCasesResults
+        });
+        //  
+
+        const submissionWithTestCase = await db.submission.findUnique({
+            where: {
+                id: submission.id
+            },
+            include: {
+                testCase: true,
+            }
+        })
+
+
+
+
 
         res.status(200).json({
-            message: "Code Executed!",
+            message: "Code Executed!  Sucessfully!",
+            submission: submissionWithTestCase
         });
 
 
 
     } catch (error) {
-
+       console.error("Error executing code", error.message);
+       res.status(500).json({error:"Failed to execute code "})
     }
 
 }
