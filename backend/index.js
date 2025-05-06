@@ -8,7 +8,8 @@ import cookieParser from "cookie-parser";
 import authRoutes  from "./src/routes/auth.routes.js";
 import problemRoutes from "./src/routes/problems.routes.js";
 import executionRoute from "./src/routes/executeCode.routes.js";
-
+import submissionRoutes from "./src/routes/submission.routes.js"
+import playlistRoutes from "./src/routes/playlist.routes.js"
 
 dotenv.config();
 
@@ -25,7 +26,8 @@ app.get('/', (req, res)=>{
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/problems', problemRoutes);
-app.use('/api/v1/execute-code',executionRoute );
+app.use('/api/v1/execute-code',executionRoute);
+app.use('/api/v1/submission',submissionRoutes )
 
 app.use("api/v1/playlist", playlistRoutes)
 

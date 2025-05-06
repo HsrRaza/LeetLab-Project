@@ -1,6 +1,7 @@
-import e from "express";
+import { db } from "../libs/db.js";
 
-import { getJudge0LanguageId, submitBatch } from "../libs/judge0.lib";
+
+import { getJudge0LanguageId, pollBatchResults,submitBatch } from "../libs/judge0.lib.js";
 
 export const createProblem = async (req, res) => {
     // get the all data from the req body

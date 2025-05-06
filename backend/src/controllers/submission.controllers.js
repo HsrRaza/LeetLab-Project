@@ -1,4 +1,4 @@
-import {db} from "../libs/db.js"
+import { db } from "../libs/db.js";
 
 export const getAllSubmission = async (req, res) =>{
     try {
@@ -32,7 +32,7 @@ export const getSubmissionsForProblem = async (req, res) =>{
         const userId = req.user.id;
         const problemId = req.params.problemId;
 
-        const submission = await db.submission,findMany({
+        const submission = await db.submission.findMany({
             where:{
                 userId:userId,
                 problemId:problemId
