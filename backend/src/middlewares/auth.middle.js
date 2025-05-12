@@ -55,7 +55,7 @@ export const authMiddleware = async (req, res ,next) => {
     }
 }
 
-export const checkAdmin = async (req , res)=>{
+export const checkAdmin = async (req , res, next)=>{
     try {
         const userId = req.user.id;
 
@@ -73,6 +73,7 @@ export const checkAdmin = async (req , res)=>{
                 message:"Access denied - Admins only"
             })
         }
+        next()
     } catch (error) {
         console.error("Error checking admin role", error);
         res.status(500).json({message:"Error checking admin role"})

@@ -6,7 +6,7 @@ import { getJudge0LanguageId, pollBatchResults,submitBatch } from "../libs/judge
 export const createProblem = async (req, res) => {
     // get the all data from the req body
 
-    const { title, description, difficulty, tags, examples, constraints, testcases, codeSnippets, referenceSolution } = req.body;
+    const { title, description, difficulty, tags, examples, constraints, testcases, codeSnippets, referenceSolutions } = req.body;
 
 
     // check the user role  once again
@@ -17,18 +17,20 @@ export const createProblem = async (req, res) => {
 
         // loop through each reference solution for different langauges.. 
 
-        for (const { language, solutionCode } of Object.entries(referenceSolution)) {
+        for (const [ language, solutionCode ] of Object.entries(referenceSolutions)) {
+        
+            console.log("Reference language passed:", language)
 
-            const langauageId = getJudge0LanguageId(language);
+            const languageId = getJudge0LanguageId(language);
 
-            if (!langauageId) {
+            if (!languageId) {
                 return res.status(400).json({ error: `Language ${language} is not supported ` })
             }
 
             // 
             const submissions = testcases.map((input, output) => ({
-                souce_code: solutionCode,
-                language_id: langauageId,
+                source_code: solutionCode,
+                language_id: languageId,
                 stdin: input,
                 expected_output: output,
             }))
@@ -39,12 +41,14 @@ export const createProblem = async (req, res) => {
             const tokens = submissionsResults.map((res) => res.token);
 
             const results = await pollBatchResults(tokens)
+            console.log( "--inside create problem --" , results);
+            
 
             for (let i = 0; i < results.length; i++) {
-                const results = results[i];
+                const result = results[i];
 
-                if (results.status.id !== 3) {
-                    return res.status(400).json({ error: `TestCase ${i + 1} failed for langauage ${language}` })
+                if (result.status.id !== 3) {
+                    return res.status(400).json({ error: `TestCase ${i + 1} failed for language ${language}` })
                 }
             }
 
@@ -61,7 +65,7 @@ export const createProblem = async (req, res) => {
                     constraints,
                     testcases,
                     codeSnippets,
-                    referenceSolution,
+                    referenceSolutions,
                     userId: req.user.id,
 
                 }
