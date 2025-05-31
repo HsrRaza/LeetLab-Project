@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 
+// eslint-disable-next-line no-unused-vars
 export const useSubmissionStore = create((set, get) => ({
   isLoading: false,
   submissions: [],
